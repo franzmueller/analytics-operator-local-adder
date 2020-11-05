@@ -11,24 +11,25 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-from senergy_local_analytics import App, Input, Output
+import unittest
+from unittest.mock import patch
+
+from senergy_local_analytics import Input
+
+import main
 
 
-def process(inputs: list[Input]):
-    val = 0
-    for inp in inputs:
-        if inp.current_value is not None:
-            val += inp.current_value
-    return Output(True, {"sum": val})
+class TestMainMethods(unittest.TestCase):
+
+    def test_process(self):
+        input1 = Input("value1")
+        input2 = Input("value2")
+        input1.current_value = 1
+        input2.current_value = 3
+        output = main.process([input1, input2])
+        self.assertTrue(output.send)
+        self.assertEqual({'sum': 4}, output.values)
 
 
-if __name__ == '__main__':
-    app = App()
 
-    input1 = Input("value1")
-    input2 = Input("value2")
 
-    app.config([input1, input2])
-    print("start operator", flush=True)
-    app.process_message(process)
-    app.main()
