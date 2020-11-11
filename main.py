@@ -11,10 +11,12 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+import typing
+
 from senergy_local_analytics import App, Input, Output
 
 
-def process(inputs: list[Input]):
+def process(inputs: typing.List[Input]):
     val = 0
     for inp in inputs:
         if inp.current_value is not None:
