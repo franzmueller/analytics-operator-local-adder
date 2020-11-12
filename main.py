@@ -23,7 +23,7 @@ values = {}
 def process(inputs: typing.List[Input]):
     for inp in inputs:
         if inp.current_value is not None:
-            values[inp.name] = inp.current_value
+            values[inp.current_topic] = inp.current_value
     return Output(True, {"sum": sum(values.values()), "message_id": str(uuid.uuid4()),
                          "timestamp": '{}Z'.format(datetime.utcnow().isoformat())})
 
