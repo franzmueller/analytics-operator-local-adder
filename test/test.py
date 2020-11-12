@@ -12,7 +12,6 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 import unittest
-from unittest.mock import patch
 
 from senergy_local_analytics import Input
 
@@ -25,10 +24,18 @@ class TestMainMethods(unittest.TestCase):
         input1 = Input("value1")
         input2 = Input("value2")
         input1.current_value = 1
+        input1.name = "test1"
         input2.current_value = 3
+        input2.name = "test2"
         output = main.process([input1, input2])
         self.assertTrue(output.send)
-        self.assertEqual({'sum': 4}, output.values)
+        self.assertEqual({'sum', 'message_id', 'timestamp'}, output.values.keys())
+        input1.current_value = 7
+        input1.name = "test1"
+        input2.current_value = 4
+        input2.name = "test3"
+        output = main.process([input1, input2])
+        self.assertEqual(14, output.values["sum"])
 
 
 

@@ -12,16 +12,20 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 import typing
+import uuid
+from datetime import datetime
 
 from senergy_local_analytics import App, Input, Output
 
+values = {}
+
 
 def process(inputs: typing.List[Input]):
-    val = 0
     for inp in inputs:
         if inp.current_value is not None:
-            val += inp.current_value
-    return Output(True, {"sum": val})
+            values[inp.name] = inp.current_value
+    return Output(True, {"sum": sum(values.values()), "message_id": str(uuid.uuid4()),
+                         "timestamp": '{}Z'.format(datetime.utcnow().isoformat())})
 
 
 if __name__ == '__main__':
@@ -29,8 +33,11 @@ if __name__ == '__main__':
 
     input1 = Input("value1")
     input2 = Input("value2")
+    input3 = Input("value3")
+    input4 = Input("value4")
+    input5 = Input("value5")
 
-    app.config([input1, input2])
+    app.config([input1, input2, input3, input4, input5])
     print("start operator", flush=True)
     app.process_message(process)
     app.main()
