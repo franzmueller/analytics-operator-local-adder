@@ -17,20 +17,30 @@ from datetime import datetime
 
 from senergy_local_analytics import App, Input, Output
 
-values = {}
 
+class Adder:
 
-def process(inputs: typing.List[Input]):
-    for inp in inputs:
-        if inp.current_value is not None:
-            values[inp.current_topic] = inp.current_value
-    return Output(True, {"sum": sum(values.values()), "message_id": str(uuid.uuid4()),
-                         "timestamp": '{}Z'.format(datetime.utcnow().isoformat())})
+    def __init__(self):
+        self.values = {}
+        self.sum_total = 0
+
+    def process(self, inputs: typing.List[Input]):
+        for inp in inputs:
+            if inp.current_value is not None:
+                self.values[inp.current_topic] = inp.current_value
+        value_sum = sum(self.values.values())
+        if self.sum_total != value_sum:
+            self.sum_total = value_sum
+            return Output(True, {"sum": sum(self.values.values()), "message_id": str(uuid.uuid4()),
+                                 "timestamp": '{}Z'.format(datetime.utcnow().isoformat())})
+        else:
+            return Output(False, {"sum": sum(self.values.values()), "message_id": str(uuid.uuid4()),
+                                  "timestamp": '{}Z'.format(datetime.utcnow().isoformat())})
 
 
 if __name__ == '__main__':
     app = App()
-
+    adder = Adder()
     input1 = Input("value1")
     input2 = Input("value2")
     input3 = Input("value3")
@@ -39,5 +49,5 @@ if __name__ == '__main__':
 
     app.config([input1, input2, input3, input4, input5])
     print("start operator", flush=True)
-    app.process_message(process)
+    app.process_message(adder.process)
     app.main()

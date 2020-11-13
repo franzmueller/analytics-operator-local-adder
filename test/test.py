@@ -21,20 +21,21 @@ import main
 class TestMainMethods(unittest.TestCase):
 
     def test_process(self):
+        adder = main.Adder()
         input1 = Input("value1")
         input2 = Input("value2")
         input1.current_value = 1
-        input1.name = "test1"
+        input1.current_topic = "test1"
         input2.current_value = 3
-        input2.name = "test2"
-        output = main.process([input1, input2])
+        input2.current_topic = "test2"
+        output = adder.process([input1, input2])
         self.assertTrue(output.send)
         self.assertEqual({'sum', 'message_id', 'timestamp'}, output.values.keys())
         input1.current_value = 7
-        input1.name = "test1"
+        input1.current_topic = "test1"
         input2.current_value = 4
-        input2.name = "test3"
-        output = main.process([input1, input2])
+        input2.current_topic = "test3"
+        output = adder.process([input1, input2])
         self.assertEqual(14, output.values["sum"])
 
 
