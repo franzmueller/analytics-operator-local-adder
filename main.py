@@ -28,8 +28,8 @@ class Adder:
     def process(self, inputs: typing.List[Input]):
         for inp in inputs:
             if inp.current_value is not None:
-                self.message_no = self.message_no + 1
                 self.values[inp.current_topic] = inp.current_value
+        self.message_no = self.message_no + 1
         value_sum = sum(self.values.values())
         if self.sum_total != value_sum:
             self.sum_total = value_sum
