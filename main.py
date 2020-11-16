@@ -23,15 +23,18 @@ class Adder:
     def __init__(self):
         self.values = {}
         self.sum_total = 0
+        self.message_no = 0
 
     def process(self, inputs: typing.List[Input]):
         for inp in inputs:
             if inp.current_value is not None:
+                self.message_no = self.message_no + 1
                 self.values[inp.current_topic] = inp.current_value
         value_sum = sum(self.values.values())
         if self.sum_total != value_sum:
             self.sum_total = value_sum
-            return Output(True, {"sum": sum(self.values.values()), "message_id": str(uuid.uuid4()),
+            return Output(True, {"sum": sum(self.values.values()), "message_no": self.message_no,
+                                 "message_id": str(uuid.uuid4()),
                                  "timestamp": '{}Z'.format(datetime.utcnow().isoformat())})
         else:
             return Output(False, {"sum": sum(self.values.values()), "message_id": str(uuid.uuid4()),
